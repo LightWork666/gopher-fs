@@ -1,3 +1,0 @@
-Hello from Gopher-FS!
-This is a test file to verify the distributed file system is working correctly.
-You successfully downloaded this file from the server.
