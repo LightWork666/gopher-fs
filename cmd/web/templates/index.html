@@ -256,19 +256,21 @@
         </div>
 
         <div class="card">
-            <h3 style="margin-top:0"><i class="fas fa-shield-alt" style="color:var(--success)"></i> Encrypted Contents</h3>
-            <ul class="file-list">
+            <h3 style="margin-top:0">
+                <i class="fas fa-shield-alt" style="color:var(--success)"></i> Encrypted Contents
+                <span id="live-indicator" style="font-size: 0.7rem; background: #222; color: #0f0; padding: 2px 6px; border-radius: 4px; display: none; margin-left: 10px;">● LIVE SYNC</span>
+            </h3>
+            <ul class="file-list" id="file-list-container">
                 {{range .Files}}
                 <li class="file-item">
                     <div class="file-info">
                         <i class="fas fa-file-code file-icon"></i>
                         <div>
                             <strong>{{.Name}}</strong>
-                            <span class="file-meta">{{.Size}} | SHA-256: <span class="file-hash">{{.Hash}}</span></span>
+                            <span class="file-meta">{{.Size}} | SHA-256: <span class="file-hash">{{.Hash}}</span> | <a href="/download/{{$.RoomID}}/{{.Name}}" style="color: var(--accent);">Download</a></span>
                         </div>
                     </div>
                     <div class="actions">
-                        <a href="/download/{{$.RoomID}}/{{.Name}}" class="btn-sm btn-download"><i class="fas fa-download"></i> Retrieve</a>
                         <form action="/delete/{{$.RoomID}}/{{.Name}}" method="post" style="display:inline">
                             <button type="submit" class="btn-sm btn-delete"><i class="fas fa-trash"></i></button>
                         </form>
@@ -317,6 +319,30 @@
             navigator.clipboard.writeText(url).then(() => {
                 alert('Secure Room Link Copied! Share this with others on your network.');
             });
+        }
+
+        // Live Sync Feature
+        const listContainer = document.getElementById('file-list-container');
+        if (listContainer) {
+            document.getElementById('live-indicator').style.display = 'inline-block';
+            
+            setInterval(() => {
+                fetch(window.location.href)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        
+                        const newContent = doc.getElementById('file-list-container').innerHTML;
+                        const oldContent = document.getElementById('file-list-container').innerHTML;
+
+                        if (newContent.trim() !== oldContent.trim()) {
+                            document.getElementById('file-list-container').innerHTML = newContent;
+                            // console.log("Files updated from server");
+                        }
+                    })
+                    .catch(e => console.error("Sync error:", e));
+            }, 3000); // Check every 3 seconds
         }
     </script>
 </body>
