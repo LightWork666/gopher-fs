@@ -186,7 +186,8 @@
             border-radius: 8px;
             color: white;
             font-size: 1rem;
-            width: 300px;
+            width: 100%;
+            max-width: 300px;
             text-align: center;
             margin-bottom: 1rem;
         }
@@ -195,6 +196,73 @@
         .nav-links a { color: var(--text-muted); text-decoration: none; margin-left:1rem; transition: color 0.2s; cursor: pointer; }
         .nav-links a:hover { color: var(--accent); }
 
+        /* Mobile Responsiveness */
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+            .brand {
+                font-size: 1.25rem;
+            }
+            .container {
+                margin-top: 70px; /* Reduced from 100px */
+                padding: 1rem;    /* Reduced from 2rem */
+            }
+            .card {
+                padding: 1rem;    /* Reduced from 2rem */
+                border-radius: 12px;
+            }
+            .landing-hero h1 {
+                font-size: 2rem !important; /* Override 3rem */
+            }
+            .upload-zone {
+                padding: 1.5rem; /* Reduced from 3rem */
+            }
+            .room-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .room-code {
+                width: 100%;
+                text-align: center;
+                font-size: 0.9rem;
+            }
+            .file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .file-info {
+                width: 100%;
+            }
+            .file-meta {
+                word-break: break-all; /* Ensure long hashes don't overflow */
+                font-size: 0.75rem;
+            }
+            .actions {
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 0.5rem;
+            }
+            .btn-sm {
+                padding: 0.5rem 1rem; /* Larger touch targets */
+            }
+            /* Hide non-essential elements on very small screens if needed */
+            .file-hash {
+                display: none; /* Hide full hash on mobile to save space */
+            }
+            .nav-links span {
+                display: none; /* Hide 'Network Secure' status text on small screens */
+            }
+            /* Ensure link sharing doesn't overflow */
+            div[style*="text-align:center"] span {
+                display: block;
+                word-break: break-all;
+                margin-top: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
