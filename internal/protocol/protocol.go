@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"io"
-	"os"
 )
 
 const (
@@ -27,15 +26,9 @@ type FileHeader struct {
 }
 
 // ComputeChecksum calculates SHA256 hash of a file
-func ComputeChecksum(filePath string) ([32]byte, error) {
-	file, err := os.Open(filePath)
-	if err != nil {
-		return [32]byte{}, err
-	}
-	defer file.Close()
-
+func ComputeChecksum(r io.Reader) ([32]byte, error) {
 	hash := sha256.New()
-	if _, err := io.Copy(hash, file); err != nil {
+	if _, err := io.Copy(hash, r); err != nil {
 		return [32]byte{}, err
 	}
 

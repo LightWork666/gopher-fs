@@ -4,14 +4,10 @@ import (
 	"crypto/sha256"
 	"crypto/tls"
 	"encoding/binary"
-
 	"flag"
 	"fmt"
 	"io"
 	"log"
-	
-	"crypto/tls"
-	"encoding/binary"
 	"os"
 	"path/filepath"
 	"time"
@@ -83,7 +79,13 @@ func uploadFile(serverAddr, filename string) {
 
 	// 4. Compute Checksum
 	log.Println("Computing checksum...")
-	checksum, err := protocol.ComputeChecksum(filename)
+	f2, err := os.Open(filename)
+	if err != nil {
+		log.Fatalf("Error re-opening file for checksum: %v", err)
+	}
+	defer f2.Close()
+	
+	checksum, err := protocol.ComputeChecksum(f2)
 	if err != nil {
 		log.Fatalf("Error computing checksum: %v", err)
 	}
@@ -171,7 +173,6 @@ func downloadFile(serverAddr, filename string) {
 	if err != nil {
 		log.Fatalf("Error downloading file: %v", err)
 	}
-	duration := time.Since(startTime)
 
 	// 4. Verify Checksum
 	var clientChecksum [32]byte

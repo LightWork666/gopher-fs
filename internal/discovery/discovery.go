@@ -18,7 +18,8 @@ func Listen(serviceTCPPort string) {
 	}
 	conn, err := net.ListenUDP("udp4", addr)
 	if err != nil {
-		log.Fatalf("Error starting UDP discovery server: %v", err)
+		log.Printf("Warning: UDP Discovery disabled (Error binding %d: %v)", DiscoveryPort, err)
+		return
 	}
 	defer conn.Close()
 

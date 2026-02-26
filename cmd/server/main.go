@@ -102,7 +102,14 @@ func handleDownload(conn net.Conn) {
 
 	// 6. Compute Checksum
 	log.Println("Computing checksum...")
-	checksum, err := protocol.ComputeChecksum(cleanedFileName)
+	fChecksum, err := os.Open(cleanedFileName)
+	if err != nil {
+		log.Printf("Error opening file for checksum: %v", err)
+		return
+	}
+	defer fChecksum.Close()
+
+	checksum, err := protocol.ComputeChecksum(fChecksum)
 	if err != nil {
 		log.Printf("Error computing checksum: %v", err)
 		return
@@ -137,7 +144,11 @@ func handleUpload(conn net.Conn) {
 	log.Printf("Receiving file: %s (%d bytes)", fileName, fileSize)
 
 	// 2. Create File
-	savePath := "server_" + filepath.Base(fileName)
+	if err := os.MkdirAll("storage", 0755); err != nil {
+		log.Printf("Error ensuring storage directory: %v", err)
+		return
+	}
+	savePath := filepath.Join("storage", filepath.Base(fileName))
 	file, err := os.Create(savePath)
 	if err != nil {
 		log.Printf("Error creating file %s: %v", savePath, err)
@@ -156,7 +167,14 @@ func handleUpload(conn net.Conn) {
 	}
 
 	// 4. Verify Checksum
-	localChecksum, err := protocol.ComputeChecksum(savePath)
+	fCheck, err := os.Open(savePath)
+	if err != nil {
+		log.Printf("Error opening checking file: %v", err)
+		return 
+	}
+	defer fCheck.Close()
+
+	localChecksum, err := protocol.ComputeChecksum(fCheck)
 	if err != nil {
 		log.Printf("Error computing local checksum: %v", err)
 		return
